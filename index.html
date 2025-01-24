@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forme</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Dosis:wght@100..900&family=Parkinsans:wght@300..800&family=Roboto:ital,wght@0,400..800;1,400..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Comfortaa', cursive;
+            background-color: rgb(84, 88, 88);
+            color: rgb(255, 255, 255);
+        
+        }
+   
+        
+        *, *::before, *::after{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        .photo-viewer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+           /* height: 100vh;  Adjust as needed */
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            transition: background-image 0.5s ease-in-out;
+     
+            
+        }
+        .display-container{
+            height: 100vh;
+            display: flex;
+        }
+    
+
+        .photo-viewer-container img{
+             padding: 30px 0; 
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            object-position: center;
+            transition: transform 0.5s ease-in-out;     
+        }
+
+                
+        .photo-viewer-container.zoomed img {
+            transform: scale(2); /* Adjust the scale value as needed */
+            cursor: zoom-out;
+
+        }
+        .photo-info{
+            display: flex;
+            width: 100%;
+            justify-content: center;
+           align-items: center;
+        }
+
+        .nav-bar {
+            
+            display: flex;
+            top: 0;
+            position: fixed;
+            z-index: 5;
+            background-color: rgba(107, 132, 94, 0.3);
+            width: 100%;
+            backdrop-filter: blur(5px);
+            padding: 0 8px;
+           gap: 10px; 
+          align-items: center;
+          
+        }
+
+
+        .nav-base{
+            bottom: 0;
+            position: fixed;
+            width: 100%;
+            z-index: 4;
+            backdrop-filter: blur(5px);
+            background-color: rgba(107, 132, 94, 0.3);
+            gap: 100px;
+            
+        }
+
+        .nav-bar.hide{
+            display: none;
+        }
+
+        .nav-bar.hide{
+            display: block;
+        }
+
+        h1{
+          
+            align-self: center;
+        }
+
+   
+
+        .lower-btn-controls{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 4px 0;
+            
+        }
+
+        .hide-lower-menu{
+            display: block;
+        }
+        .hide-lower-menu.hide{
+            display: none;
+        }
+
+        .photo-list {    
+            overflow: auto;
+            width: 100%;
+            height: 0px;
+            flex-direction: column;
+            gap: 8px;
+            padding: 16px;
+            margin: 4px;
+            transition: height.10s cubic-bezier(0.175, 0.885, 0.32, 1.275);  
+            display: none;
+        }
+
+        .photo-list.open{
+        height: 150px;
+        }
+
+        .photo-list.open{  
+        display: block;
+        }
+
+        #photo-list  li {
+            display: flex;
+            justify-content: space-evenly;
+            color: black;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        #photo-list li:nth-child(odd) {
+            background-color: #dbd3b6;
+        }
+
+        #photo-list li:nth-child(odd):hover {
+            background-color: #0000002f;
+            color: white;
+        }
+
+        #photo-list li:nth-child(even) {
+            background-color: #e0e0e0;
+        }
+
+        #photo-list li:nth-child(even):hover {
+            background-color: #e14b052f;
+            color: white;
+        }
+
+
+
+
+        @media (max-width:800px) {
+   
+            .photo-viewer-container {
+          
+            width: 100%;
+            
+        }
+
+       
+
+        .photo-list{
+            height:200px ;
+        }
+    
+        }
+        
+        
+
+
+ 
+.on-screen-btn{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.on-screen-btn{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    
+    height: 100%;
+    position: absolute; 
+    z-index: 4;
+}
+.on-screen-btn button{
+    width: 16%;
+    max-height: 100%;
+   background-color: rgba(127, 255, 212, 0);
+   border: none;
+   color: rgba(0, 0, 0, 0.27);
+   font-weight: 800;
+   font-size: 1.5rem;
+  
+
+}
+
+.on-screen-btn button:hover{
+    color: rgba(255, 255, 255, 0.648);
+    font-size: 3rem;
+}
+.on-screen-btn button:active{
+    color: black;
+    background-color: rgba(0, 0, 0, 0.084);
+}
+
+.hide-menu svg{
+    fill: rgb(63, 63, 63);
+}
+
+
+
+.hide-menu svg:active{
+    fill: rgb(174, 174, 174);
+}
+
+.title{
+    display: flex;
+    align-items: center;
+    font-weight: 800;
+}
+.title svg{
+    fill: rgb(48, 2, 71);
+}
+
+#photo-list-btn svg{
+    cursor: pointer; 
+}
+#photo-list-btn svg:active{
+    fill: rgb(174, 174, 174);
+}
+
+#add-photo-btn svg{
+    fill: rgb(255, 255, 255);
+    cursor: pointer; 
+}
+
+#fullscreen-btn svg, #zoom-btn svg{
+    cursor: pointer;  
+}
+
+/* .photo-viewer-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(20px) ;
+            z-index: -1;
+            transition: background-image 0.5s ease-in-out;
+            background-image: var(--background-image);
+        } */
+
+   
+        </style>
+</head>
+<body>
+    <nav class="nav-bar">
+      <div class="title">
+        <h1>F</h1>
+    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M480-260q75 0 127.5-52.5T660-440q0-75-52.5-127.5T480-620q-75 0-127.5 52.5T300-440q0 75 52.5 127.5T480-260Zm0-80q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29ZM160-120q-33 0-56.5-23.5T80-200v-480q0-33 23.5-56.5T160-760h126l74-80h240l74 80h126q33 0 56.5 23.5T880-680v480q0 33-23.5 56.5T800-120H160Zm0-80h640v-480H638l-73-80H395l-73 80H160v480Zm320-240Z"/>
+    </svg>
+        <h1>me</h1>
+    </div>
+     
+               
+      <div class="photo-info">
+            <span id="photo-name"></span>
+            <span id="photo-date"></span>
+        </div>    
+
+    <p id="photo-list-btn" title="show photo list">
+        <svg height="28px" viewBox="0 0 1024 1024" class="icon"  version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M372.778667 182.997333l566.272 189.952-189.952 566.272L182.826667 749.269333z" fill="#64B5F6" /><path d="M410.410667 266.752l446.336 145.493333-132.266667 405.76-446.336-145.493333z" fill="#1E88E5" /><path d="M232.128 123.264l587.178667 108.117333-108.117334 587.178667-587.178666-108.117333z" fill="#90CAF9" /><path d="M282.005333 201.472l462.293334 82.133333-74.666667 420.266667-462.293333-82.133333z" fill="#42A5F5" /><path d="M85.333333 85.333333h597.333334v597.333334H85.333333z" fill="#BBDEFB" /><path d="M149.333333 149.333333h469.333334v426.666667H149.333333z" fill="#4CAF50" /><path d="M341.333333 277.333333c0-23.466667 19.2-42.666667 42.666667-42.666666s42.666667 19.2 42.666667 42.666666-42.666667 85.333333-42.666667 85.333334-42.666667-61.866667-42.666667-85.333334zM426.666667 448c0 23.466667-19.2 42.666667-42.666667 42.666667s-42.666667-19.2-42.666667-42.666667 42.666667-85.333333 42.666667-85.333333 42.666667 61.866667 42.666667 85.333333z" fill="#FFFFFF" /><path d="M288 356.266667c-21.333333-12.8-27.733333-38.4-14.933333-57.6 12.8-21.333333 38.4-27.733333 57.6-14.933334 21.333333 12.8 53.333333 78.933333 53.333333 78.933334s-74.666667 6.4-96-6.4zM480 369.066667c21.333333 12.8 27.733333 38.4 14.933333 57.6-12.8 21.333333-38.4 27.733333-57.6 14.933333-21.333333-10.666667-53.333333-78.933333-53.333333-78.933333s74.666667-6.4 96 6.4z" fill="#FFFFFF" /><path d="M480 356.266667c21.333333-12.8 27.733333-38.4 14.933333-57.6-12.8-21.333333-38.4-27.733333-57.6-14.933334-21.333333 10.666667-53.333333 78.933333-53.333333 78.933334s74.666667 6.4 96-6.4zM288 369.066667c-21.333333 12.8-27.733333 38.4-14.933333 57.6 12.8 21.333333 38.4 27.733333 57.6 14.933333 21.333333-12.8 53.333333-78.933333 53.333333-78.933333s-74.666667-6.4-96 6.4z" fill="#FFFFFF" /><path d="M384 362.666667m-42.666667 0a42.666667 42.666667 0 1 0 85.333334 0 42.666667 42.666667 0 1 0-85.333334 0Z" fill="#FFC107" /></svg>
+    </p>
+
+        <p id="hide-menu" class="hide-menu">
+            <svg  height="28px" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 3.32001H16C14.8954 3.32001 14 4.21544 14 5.32001V8.32001C14 9.42458 14.8954 10.32 16 10.32H19C20.1046 10.32 21 9.42458 21 8.32001V5.32001C21 4.21544 20.1046 3.32001 19 3.32001Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 3.32001H5C3.89543 3.32001 3 4.21544 3 5.32001V8.32001C3 9.42458 3.89543 10.32 5 10.32H8C9.10457 10.32 10 9.42458 10 8.32001V5.32001C10 4.21544 9.10457 3.32001 8 3.32001Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 14.32H16C14.8954 14.32 14 15.2154 14 16.32V19.32C14 20.4246 14.8954 21.32 16 21.32H19C20.1046 21.32 21 20.4246 21 19.32V16.32C21 15.2154 20.1046 14.32 19 14.32Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 14.32H5C3.89543 14.32 3 15.2154 3 16.32V19.32C3 20.4246 3.89543 21.32 5 21.32H8C9.10457 21.32 10 20.4246 10 19.32V16.32C10 15.2154 9.10457 14.32 8 14.32Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+        </p>
+    </nav>
+    <div class="display-container">
+
+         <div class="on-screen-btn">
+
+                <button id="prev-btn" aria-label="previous-button" >&lt;</button>
+               <button id="next-btn" aria-label="next-button">&gt;</button>
+        </div>
+        <div class="photo-viewer-container"> 
+            <img id="main-photo"  src="">
+        </div>
+            
+    </div>
+        <div class="nav-base">
+                    <div class="control-container">
+                    
+                        <ul id="photo-list" class="photo-list">
+                        <!-- dynamically generated list items -->
+                        </ul>
+                        
+                    </div>    
+
+                    <div class="hide-lower-menu">
+                        
+                        <div class="lower-btn-controls">
+
+                    <p id="add-photo-btn" aria-label="import-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" fill="#5f6368"><path d="M440-440ZM120-120q-33 0-56.5-23.5T40-200v-480q0-33 23.5-56.5T120-760h126l74-80h240v80H355l-73 80H120v480h640v-360h80v360q0 33-23.5 56.5T760-120H120Zm640-560v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80ZM440-260q75 0 127.5-52.5T620-440q0-75-52.5-127.5T440-620q-75 0-127.5 52.5T260-440q0 75 52.5 127.5T440-260Zm0-80q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29Z"/>
+                            </svg>
+                    </p>
+
+                    <p id="fullscreen-btn" aria-label="toggle-full-screen-button">  <svg  height="28px" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="48" height="48" fill="white" fill-opacity="0.01"/>
+                        <path d="M16 40H6C4.89543 40 4 39.1046 4 38V10C4 8.89543 4.89543 8 6 8H42C43.1046 8 44 8.89543 44 10V16" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        <rect x="24" y="24" width="20" height="16" rx="2" fill="#2F88FF" stroke="#000000" stroke-width="4" stroke-linejoin="round"/>
+                        </svg>
+                       
+                    </p> 
+
+                        <p id="zoom-btn" aria-label="toggle-full-zoom-button">
+                            <svg height="28px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+
+                            <defs>
+                            
+                            <style>.c{stroke:#ffffff;}.c,.d,.e,.f{fill:none;stroke-linecap:round;stroke-linejoin:round;}.d,.e,.f{stroke:#4eb8ff;}.e{stroke-dasharray:0 0 3 3;}.f{stroke-dasharray:0 0 3.34 3.34;}</style>
+                            
+                            </defs>
+                            
+                            <g id="a"/>
+                            
+                            <g id="b">
+                            
+                            <g>
+                            
+                            <polyline class="d" points="7.99 19.5 2.5 19.5 2.5 16.5"/>
+                            
+                            <line class="e" x1="2.5" x2="2.5" y1="13.5" y2="9"/>
+                            
+                            <polyline class="d" points="2.5 7.5 2.5 4.5 5.5 4.5"/>
+                            
+                            <line class="f" x1="8.83" x2="13.84" y1="4.5" y2="4.5"/>
+                            
+                            <polyline class="d" points="15.5 4.5 18.5 4.5 18.5 7"/>
+                            
+                            </g>
+                            
+                            <path class="c" d="M18.8,13.39c0,2.98-2.42,5.4-5.4,5.4s-5.4-2.42-5.4-5.4,2.42-5.4,5.4-5.4,5.4,2.42,5.4,5.4Z"/>
+                            
+                            <line class="c" x1="17.35" x2="21.5" y1="17.31" y2="21.5"/>
+                            
+                            </g>
+                            
+                            </svg>
+                        </p>
+
+                        <input type="file" id="file-input" multiple style="display: none;">
+
+                        
+
+                    </div>
+                </div>
+            </div>
+      <script>
+   const photos = [
+    {
+        name: 'Photo 2',
+        date: '2021-09-02',
+        url: './IMG_3729.JPG',
+    },
+    {
+        name:'img_0199',
+        url:'./img_0199.jpeg',
+        date: ''
+    },
+    {
+        name: 'img_19988',
+        date:'',
+        url:'./img_1998.jpg'
+
+    }
+   ];
+
+const mainPhoto = document.getElementById('main-photo');
+const photoName = document.getElementById('photo-name');
+const photoDate = document.getElementById('photo-date');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const photoList = document.getElementById('photo-list');
+const addPhotoBtn = document.getElementById('add-photo-btn');
+const fileInput = document.getElementById('file-input');
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+const zoomBtn = document.getElementById('zoom-btn'); 
+const photoListElement = document.getElementById('photo-list-btn');
+const photoViewerContainer = document.querySelector('.photo-viewer-container');
+const hideMenu = document.getElementById('hide-menu');
+const hideLowerMenu = document.querySelector('.hide-lower-menu');
+
+
+
+let currentPhotoIndex = 0;
+
+
+
+function init() {
+    addEventListeners();
+    updatePhotoList();
+    displayPhoto(currentPhotoIndex); // Display the first photo initially
+
+}
+
+function addEventListeners() {
+    // Add event listeners for navigation buttons
+    prevBtn.addEventListener('click', () => {
+        displayPhoto(currentPhotoIndex - 1);
+    });
+    nextBtn.addEventListener('click', () => {
+        displayPhoto(currentPhotoIndex + 1);
+    });
+
+    // Add event listener for add photo button
+    addPhotoBtn.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    // Add event listener for file input
+    fileInput.addEventListener('change', (event) => {
+        const files = Array.from(event.target.files);
+        files.forEach((file) => {
+            addPhoto(file);
+        });
+    });
+
+    // Add event listener for full-screen button
+    fullscreenBtn.addEventListener('click', toggleFullScreen);
+
+    // Add event listener for the zoom button
+    zoomBtn.addEventListener('click', toggleZoom); // Toggle zoom mode
+
+    // Add event listener to select a
+    //  photo in the photo list 
+    photoList.addEventListener('click', (event) => {
+        if (event.target.tagName === 'LI') {
+            const index = parseInt(event.target.dataset.index);
+            displayPhoto(index);
+        }
+    });
+    
+ // Add event listener for arrow key navigation
+    document.addEventListener('keyup', (event) => {
+        if (event.key === 'ArrowLeft') {
+            displayPhoto(currentPhotoIndex - 1); // Display the previous photo
+        } else if (event.key === 'ArrowRight') {
+            displayPhoto(currentPhotoIndex + 1); // Display the next photo
+        }
+    });
+
+
+
+    // Add event listener for toggle photp list button
+    photoListElement.addEventListener('click', togglePhotolistVisibility);
+
+    hideMenu.addEventListener('click', hideMenuElement);
+  
+}
+
+function updatePhotoList() {
+    photoList.innerHTML = '';
+    photos.forEach((photo, index) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = `${photo.name} - ${photo.date}`;
+        listItem.dataset.index = index;
+
+      
+
+        photoList.appendChild(listItem);
+
+   // Create the SVG delete button
+   const deleteBtn = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        deleteBtn.setAttribute("width", "20");
+        deleteBtn.setAttribute("height", "20");
+        deleteBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f636880"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>';
+
+        // Add an event listener to the delete button
+        deleteBtn.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent the click event from bubbling up to the list item
+            deletePhoto(index); // Call the deletePhoto function with the index of the photo to delete
+        });
+
+        listItem.appendChild(deleteBtn); // Append the delete button to the list item
+        photoList.appendChild(listItem); // Append the list item to the photo lis
+
+      
+    });
+}
+
+
+// Function to delete a photo by index
+function deletePhoto(index) {
+
+    photos.splice(index, 1); // Remove the photo from the photos array
+    updatePhotoList(); // Update the photo list in the UI
+    if (photos.length > 0) {
+        displayPhoto(0); // Display the first photo in the updated list
+    } else {
+        mainPhoto.src = ''; // Clear the main photo if no photos are left
+        photoName.textContent = '';
+        photoDate.textContent = '';
+    }
+}
+
+
+function displayPhoto(index) {
+    if (index < 0) {
+        index = photos.length - 1; // Wrap around to the last photo if the index is less than 0
+    } else if (index >= photos.length) {
+        index = 0; // Wrap around to the first photo if the index is greater than or equal to the number of photos
+    }
+    const photo = photos[index]; // Get the photo at the specified index
+    if (photo.url) {
+        mainPhoto.src = photo.url; // Set the src attribute of the main photo element if URL is available
+        mainPhoto.style.backgroundColor = ''; // Clear the background color
+        // mainPhoto.style.backgroundSize = '100px';
+    } else {
+        mainPhoto.src = ''; // Clear the src attribute if no URL is available
+        mainPhoto.style.backgroundColor = photo.backgroundColor; // Set the background color as a placeholder
+    }
+    photoName.textContent = photo.name; // Set the text content of the photo name element
+    photoDate.textContent = photo.date; // Set the text content of the photo date element
+    currentPhotoIndex = index; // Update the current photo index
+
+    // Set the background image of the container
+    const container = document.querySelector('.photo-viewer-container');
+    container.style.setProperty('--background-image', `url(${photo.url})`);
+
+}
+
+function addPhoto(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+        const photo = {
+            name: file.name,
+            date: file.lastModifiedDate.toLocaleDateString(),
+            url: reader.result
+        };
+        photos.push(photo);
+        updatePhotoList();
+        displayPhoto(photos.length - 1);
+    };
+    reader.readAsDataURL(file);
+}
+
+// Toggle full-screen mode
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch((err) => {
+            alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+        });
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+// Toggle zoom mode
+function toggleZoom() {
+    photoViewerContainer.classList.toggle('zoomed');
+ 
+}
+//Toggle photo list on and off visibility 
+function togglePhotolistVisibility(){
+   photoList.classList.toggle('open');
+    
+    }
+function hideMenuElement(){
+    
+    hideLowerMenu.classList.toggle('hide');
+}
+
+
+// Initialize photo viewer
+init();
+
+      </script>
+    
+</body>
+</html>
